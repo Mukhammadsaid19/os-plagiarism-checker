@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-image: url(&quot;/home/saidakbar/os-plagiarism-checker/images/loginBack.jpg&quot;)</string>
+  </property>
   <widget class="QLabel" name="signup_label">
    <property name="geometry">
     <rect>
@@ -26,6 +29,9 @@
     <font>
      <pointsize>24</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0)</string>
    </property>
    <property name="text">
     <string>Sign Up</string>
@@ -64,8 +70,8 @@
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(85, 85, 255);
-color: rgb(255, 255, 255);</string>
+    <string notr="true">background-color: rgb(71, 76, 84);
+ </string>
    </property>
    <property name="text">
     <string>Log In</string>
@@ -82,8 +88,11 @@ color: rgb(255, 255, 255);</string>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0)</string>
    </property>
    <property name="text">
     <string>First Name</string>
@@ -125,8 +134,8 @@ color: rgb(255, 255, 255);</string>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(0, 170, 0);
-color: rgb(255, 255, 255);</string>
+    <string notr="true">background-color: rgb(21, 161, 116)
+</string>
    </property>
    <property name="text">
     <string>Sign up</string>
@@ -143,8 +152,11 @@ color: rgb(255, 255, 255);</string>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0)</string>
    </property>
    <property name="text">
     <string>Email</string>
@@ -167,8 +179,11 @@ color: rgb(255, 255, 255);</string>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0)</string>
    </property>
    <property name="text">
     <string>Last Name</string>
@@ -221,8 +236,11 @@ color: rgb(255, 255, 255);</string>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0)</string>
    </property>
    <property name="text">
     <string>Password</string>
@@ -252,16 +270,19 @@ color: rgb(255, 255, 255);</string>
   <widget class="QLabel" name="pass_label_2">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>179</x>
      <y>320</y>
-     <width>150</width>
+     <width>151</width>
      <height>35</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0)</string>
    </property>
    <property name="text">
     <string>Confirm password</string>

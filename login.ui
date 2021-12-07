@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-image: url(&quot;/home/saidakbar/os-plagiarism-checker/images/loginBack.jpg&quot;)</string>
+  </property>
   <widget class="QPushButton" name="log_login_butt">
    <property name="geometry">
     <rect>
@@ -22,10 +25,13 @@
      <height>30</height>
     </rect>
    </property>
+   <property name="font">
+    <font/>
+   </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 170, 0);
-font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">color: rgb(0, 0, 0);
+background-color: rgb(21, 161, 116)
+</string>
    </property>
    <property name="text">
     <string>Login</string>
@@ -60,12 +66,22 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="font">
     <font>
+     <family>Ubuntu Condensed</family>
      <pointsize>24</pointsize>
      <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
      <underline>false</underline>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius: 10%;
+font: &quot;Ubuntu Mono&quot;;
+background-color: rgb(150, 150, 150);
+border-style: solid;
+border-color: rgb(32, 74, 135);
+font-family: &quot;Ubuntu Condensed&quot;;
+font-size: 75</string>
    </property>
    <property name="text">
     <string>Login</string>
@@ -79,14 +95,24 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
     <rect>
      <x>190</x>
      <y>180</y>
-     <width>100</width>
-     <height>35</height>
+     <width>101</width>
+     <height>37</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>14</pointsize>
     </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0)
+</string>
    </property>
    <property name="text">
     <string>Email</string>
@@ -109,8 +135,11 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>14</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(0, 0, 0)</string>
    </property>
    <property name="text">
     <string>Password</string>
@@ -149,10 +178,12 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
      <height>30</height>
     </rect>
    </property>
+   <property name="font">
+    <font/>
+   </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(85, 85, 255);
-color: rgb(255, 255, 255);
-font: 11pt &quot;MS Shell Dlg 2&quot;;
+    <string notr="true">background-color: rgb(71, 76, 84);
+color: rgb(0, 0, 0)
 </string>
    </property>
    <property name="text">
@@ -180,6 +211,14 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
     <string/>
    </property>
   </widget>
+  <zorder>email_label</zorder>
+  <zorder>log_login_butt</zorder>
+  <zorder>log_pass_line</zorder>
+  <zorder>login_label</zorder>
+  <zorder>pass_label</zorder>
+  <zorder>log_email_line</zorder>
+  <zorder>log_reg_butt</zorder>
+  <zorder>warning</zorder>
  </widget>
  <resources/>
  <connections/>
