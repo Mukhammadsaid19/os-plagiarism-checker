@@ -59,9 +59,9 @@ background-color: rgb(21, 161, 116)
    <property name="geometry">
     <rect>
      <x>190</x>
-     <y>100</y>
+     <y>99</y>
      <width>400</width>
-     <height>60</height>
+     <height>61</height>
     </rect>
    </property>
    <property name="font">
@@ -82,6 +82,12 @@ border-style: solid;
 border-color: rgb(32, 74, 135);
 font-family: &quot;Ubuntu Condensed&quot;;
 font-size: 75</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="lineWidth">
+    <number>1</number>
    </property>
    <property name="text">
     <string>Login</string>
@@ -111,7 +117,8 @@ font-size: 75</string>
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(0, 0, 0)
+    <string notr="true">color: rgb(0, 0, 0);
+border: rgb(255, 255, 255)
 </string>
    </property>
    <property name="text">
@@ -138,14 +145,14 @@ font-size: 75</string>
      <pointsize>14</pointsize>
     </font>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::ClickFocus</enum>
+   </property>
    <property name="styleSheet">
     <string notr="true">color: rgb(0, 0, 0)</string>
    </property>
    <property name="text">
     <string>Password</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
    <property name="margin">
     <number>10</number>
