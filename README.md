@@ -16,7 +16,7 @@ Plagiarism detection system consists of several connected components. First, we 
 
 A complete view of these components is illustrated in Figure 1.
 
-![alt text](https://user-images.githubusercontent.com/26520665/145014825-5881b1d1-6477-4118-a82a-de2037867734.png)
+![alt text](https://user-images.githubusercontent.com/26520665/145258724-53dda5bd-84c4-45da-a63d-3cfbe47e3f2e.png)
 
 As you can see, our application will be web-based. Implementations of each component are given below:
 1. **Client Side.** React. The core library is React JS library, and the user interface will be marked up using HTML and Bootstrap.
@@ -41,6 +41,6 @@ In our information system (IS) we define the parameters as following:
 3. Check level. We mainly focus on phrases and sentences (refer to Figure 2)
 4. Algorithms used. We will combine many algorithms in our inventory and develop a pipe of algorithms for each step of analysis.
 
-![alt text](https://user-images.githubusercontent.com/26520665/145015930-d20efcd9-cfeb-46d0-be0b-0907e38e9acc.png)
+![alt text](https://user-images.githubusercontent.com/26520665/145258271-cb2ee2d9-101c-4c22-b6ca-cb6c4cffea6c.png)
 
 Given these parameters, our approach will vary as we progress and get to know how plagiarism checker system operate. For example, for starters, we can start with substring matching in the document. Such approach may suffice at the level of copying and paste, but for paraphrasing other solutions should be adopted.
