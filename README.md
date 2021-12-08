@@ -1,5 +1,30 @@
 # Project: Plagiarism Checker & File Management System
 
+## Installation
+
+Prerequisites:
+- `MySQL`
+- `Python`
+- `Bit of patience`
+
+### Database
+Note that for now you should run DDL `db/user.sql` manually. 
+
+### Backend
+First, run the backend the root folder:
+
+`$ make`
+
+Then, run starting bash script:
+
+`$ ./run.sh`
+
+### Frontend
+
+After that, run the client by:
+
+`$ python frontend/main.py`
+
 ## Problem Statement
 Plagiarism is a representation of another author’s languages or ideas as one’s own original work. It was an acute problem from ancient times, and with advent of informational revolution, it has become much more important in both academic and intellectual world. 
 According to survey by The Center for Academic Integrity around 80% of undergraduates in USA have cheated at least once. Such alarming numbers are a result of missed plagiarism cases which could be detected by using plagiarism or content similarity detection algorithm.
