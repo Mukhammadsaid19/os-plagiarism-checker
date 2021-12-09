@@ -29,9 +29,9 @@ Then, run starting bash script:
 
 ### Frontend
 
-After that, run the client by:
+Open QT creator and load `frontend-qt` folder.
 
-`$ python frontend/main.py`
+There you can build the frontend. Run frontend only after setting up the server.
 
 ## Problem Statement
 Plagiarism is a representation of another author’s languages or ideas as one’s own original work. It was an acute problem from ancient times, and with advent of informational revolution, it has become much more important in both academic and intellectual world. 
