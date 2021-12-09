@@ -19,6 +19,14 @@ Then, run starting bash script:
 
 `$ ./run.sh`
 
+### Protocol
+
+#### Request
+`<route> <arg1> <arg2> ... <argn>`
+
+#### Response
+`<route> <status> <payload?>`
+
 ### Frontend
 
 After that, run the client by:
