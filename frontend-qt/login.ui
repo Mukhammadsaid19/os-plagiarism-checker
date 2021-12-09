@@ -14,7 +14,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(&quot;./images/loginBack.jpg&quot;)</string>
+   <string notr="true">background-image: url(&quot;/home/saidakbar/os-plagiarism-checker/images/loginBack.jpg&quot;)</string>
   </property>
   <widget class="QPushButton" name="log_login_butt">
    <property name="geometry">

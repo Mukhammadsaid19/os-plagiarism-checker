@@ -6,6 +6,19 @@ import socket
 import mysql.connector as con
 
 import socket
+from ctypes import *
+
+BUFF_SIZE = 1024
+
+
+""" This class defines a C-like struct """
+class LoginPayload(Structure):
+    _fields_ = [("route", c_char_p),
+                ("email", c_char_p),
+                ("password", c_char_p)]
+
+class ResponsePayload(Structure):
+    _fields_ = [("status", c_char_p)]
 
 def establish_connection():
     HOST = '127.0.0.1'
@@ -16,19 +29,22 @@ def establish_connection():
 
     print('Connected...')
 
-    # s.send("Nima GAP".encode())
-
     return s
 
 def send_request(data: str):
     s = establish_connection()
 
-    s.send(data.encode())
 
-    s_name = s.recv(1024)
-    s_name = s_name.decode()
+    
+    # s.send(data.encode())
+    # print(data)
 
-    print(f'RESPONSE: {s_name}')
+    # msg_length = s.recv(64).decode()
+    # msg = s.recv(msg_length).decode()
+
+
+    # print(f'RESPONSE: {msg}')
+
 
     s.close()
 
@@ -36,18 +52,29 @@ def send_request(data: str):
 def login(email: str, password: str):
     s = establish_connection()
 
-    req = f'login {email} {password}'
+    # l_str = (c_char_p * BUFF_SIZE)
+    # r_str = (c_char)
+    # loginr: l_str = "/login saidov ssssssss".encode()
 
-    s.send(req.encode())
+    payload_out = LoginPayload(c_char_p("/login"), c_char_p(email), c_char_p(password))
+    # payload_out = loginr
+    # print("Sending route={:s}, email={:s}, password={:s}".format(payload_out.route,
+    #                                                     payload_out.email,
+    #                                                     payload_out.password))
+    print(payload_out)
+    nsent = s.send(payload_out)
+    # Alternative: s.sendall(...): coontinues to send data until either
+    # all data has been sent or an error occurs. No return value.
+    print("Sent {:d} bytes".format(nsent))
 
-    s_res = s.recv(32)
-    s_res = s_res.decode()
-
-    # print(f'RESPONSE: {s_res}')
+    # buff = s.recv(sizeof(l_str))
+    # payload_in = r_str.from_buffer_copy(buff)
+    # print(payload_in)
+    # print("Received status={:s}".format(payload_in))
 
     s.close()
 
-    return s_res
+    # return s_res
 
 current_user_email = ""
 
@@ -203,25 +230,25 @@ if __name__ == "__main__":
 
     # s = service.establish_connection()
 
-    # service.send_request("Hello")
+    # send_request("Hello")
     
-    # res = login("saidov", "sosecure")
+    login("saidov", "sosecure")
     # print(res)
 
-    app = QApplication(sys.argv)
-    widget = QtWidgets.QStackedWidget()
+    # app = QApplication(sys.argv)
+    # widget = QtWidgets.QStackedWidget()
 
-    loginForm = LoginApp()
-    regForm = RegApp()
-    homePage = HomeApp()
+    # loginForm = LoginApp()
+    # regForm = RegApp()
+    # homePage = HomeApp()
 
-    widget.addWidget(loginForm)
-    widget.addWidget(regForm)
-    widget.addWidget(homePage)
+    # widget.addWidget(loginForm)
+    # widget.addWidget(regForm)
+    # widget.addWidget(homePage)
 
-    widget.setCurrentIndex(0)
-    widget.setFixedWidth(1000)
-    widget.setFixedHeight(800)
+    # widget.setCurrentIndex(0)
+    # widget.setFixedWidth(1000)
+    # widget.setFixedHeight(800)
 
-    widget.show()
-    app.exec_()
+    # widget.show()
+    # app.exec_()

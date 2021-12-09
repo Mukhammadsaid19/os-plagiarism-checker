@@ -2,7 +2,7 @@ CC = gcc
 
 CPPFLAGS += -I/usr/include/mysql
 
-LDLIBS += -lmysqlclient
+LDLIBS += -lmysqlclient -lpthread
 
 
 server: server.c mysql.c

@@ -1,3 +1,5 @@
+/* server.c */
+
 #include <stdio.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -7,98 +9,155 @@
 #include <stdlib.h>
 #include <netinet/in.h> // socket address
 #include <string.h>
+#include <pthread.h>
 #include "mysql.h"
 
 #define PORT 8080
-#define MAX 1024
+#define MAX 512
 
-char* api(char*);
-char* login(char*);
-char* router(char*, char*);
+char* _login(char*, char*);
+char* router(char*);
+void *process(void *ptr);
 
-int main(int argc, char const *argv[]) {
+// Socket structure
+typedef struct
+{
+    int sock;
+    struct sockaddr address;
+    int addr_len;
+} connection_t;
 
-    int server_fd;
-    int backlog = 30;
+void closeSocket(int sock)
+{
+    close(sock);
+    return;
+}
+
+int main(int argc, char **argv)
+{
+    int sock = -1;
     struct sockaddr_in address;
+    int port = PORT;
+    connection_t *connection;
+    pthread_t thread;
 
-    int new_socket, valread;
+    /* create socket */
+    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (sock <= 0)
+    {
+        fprintf(stderr, "%s: error: cannot create socket\n", argv[0]);
+        return -3;
+    }
 
-    int opt = 1;
-    int addrlen = sizeof(address);
-
-
-    // Creating a server address
+    /* bind socket to port */
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
-
-    printf("Creating a server socket...\n");
-    server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_fd == 0) {
-        perror("Socket creation is failed.");
-        exit(EXIT_FAILURE);
+    address.sin_port = htons(port);
+    if (bind(sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in)) < 0)
+    {
+        fprintf(stderr, "error: cannot bind socket to port %d\n", port);
+        return -4;
     }
 
-    printf("Defining the server socket options, family, adress & port. \n");
-    if(setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-        perror("setsockopt failed.");
-        exit(EXIT_FAILURE);
+    /* listen on port */
+    if (listen(sock, 5) < 0)
+    {
+        fprintf(stderr, "error: cannot listen on port\n");
+        return -5;
     }
 
-    printf("Binding the server socket to port 8080...\n");
-    if (bind(server_fd, (struct sockaddr*) &address, sizeof(address)) < 0) {
-        perror("Socket bind failed");
-        exit(EXIT_FAILURE);
-    }
+    printf("ready and listening\n");
 
-    printf("Server starts to listen...\n");
-    if (listen(server_fd, backlog) < 0) {
-        perror("Socket listen failed ");
-        exit(EXIT_FAILURE);
-    } 
-    // for ( ; ; ) {
-        // fflush(stdout);
-
-        printf("New listening...");
-
-        // Server accepts clients
-
-        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {
-            perror("Socket accept failed");
-            exit(EXIT_FAILURE);
+    while (1)
+    {
+        /* accept incoming connections */
+        connection = (connection_t *)malloc(sizeof(connection_t));
+        connection->sock = accept(sock, &connection->address, &connection->addr_len);
+        if (connection->sock <= 0)
+        {
+            free(connection);
         }
-        printf("New client arrived...");
-
-        char buffer[1024]; // Buffer to read from the client
-        memset(buffer, 0, 1024);
-        read(new_socket, buffer, 1023);
-
-        // char str[] = "login saidov sosecure";
-        // char* response = api(str);
-
-        char* response = api(buffer);
-
-        // char* stub = "HTTP/1.0 200 OK\r\n\r\nHello"; // Stub response
-
-        printf("%s\n", buffer);
-
-        printf("Reading done...");
-
-        send(new_socket, response, strlen(response), 0);
-
-        fflush(stdout);
-
-        // write(new_socket, (char*) buffer, strlen((char*) buffer));
-        close(new_socket);
-    // }
+        else
+        {
+            /* start a new thread but do not wait for it */
+            pthread_create(&thread, 0, process, (void *)connection);
+            pthread_detach(thread);
+        }
+    }
 
     return 0;
 }
 
-char* router(char* route, char* request) {
+void *process(void *ptr)
+{
+    char* buff;
+    int nread;
+
+    connection_t *conn;
+    long addr = 0;
+
+    if (!ptr)
+        pthread_exit(0);
+    conn = (connection_t *) ptr;
+
+    /* Set up buffer */
+    buff = (char *)malloc((MAX)*sizeof(char));
+	buff[MAX - 1] = 0;
+
+    /* Reading from the client */
+    while ((nread = read(conn->sock, buff, MAX)) > 0)
+    {
+        addr = (long)((struct sockaddr_in *)&conn->address)->sin_addr.s_addr;
+        printf("%d.%d.%d.%d: %s\n",
+               (int)((addr)&0xff),
+               (int)((addr >> 8) & 0xff),
+               (int)((addr >> 16) & 0xff),
+               (int)((addr >> 24) & 0xff),
+               buff);
+
+        // printf("\nReceived %d bytes\n", nread);
+
+        // printf("From client: %s\n", buff);
+
+
+        // Delegate request to the router
+        char* res = router(buff);
+
+        // Sending the response...
+        send(conn->sock, res, 48, 0);
+
+    }
+
+    printf("Closing connection to client\n");
+    printf("----------------------------\n");
+
+    /* close socket and clean up */
+    free(buff);
+    close(conn->sock);
+    free(conn);
+    pthread_exit(0);
+}
+
+
+char* router(char* request) {
+    char delim[] = " ";
+    char* route = strtok(request, delim);
+
+    printf("ROUTER: %s\n", route);
+
     if (strcmp(route, "login") == 0) {
-        return login(request);
+        // Data in the format "route login password"
+        route = strtok(NULL, delim);
+        char* login = route;
+
+        route = strtok(NULL, delim);
+        char* password = route;
+
+        // Printing data
+        printf("LOGIN: %s %s\n", login, password);
+
+        return _login(login, password);
+
     } else if (strcmp(route, "register") == 0) {
 
     } else {
@@ -108,61 +167,17 @@ char* router(char* route, char* request) {
     return "";
 }
 
-char* api(char* request) {
-    char delim[] = " ";
-    char req[128] = "";
-
-    strcpy(req, request);
-
-    char* api = strtok(request, delim);
-
-    return router(api, req);
-}
-
-char* login(char* request) {
-    // Receives data in the format "login email password"
-    char delim[] = " ";
-
-    char* ptr = strtok(request, delim);
-    char* api = ptr;
-
-    ptr = strtok(NULL, delim);
-    char* email = ptr;
-
-    ptr = strtok(NULL, delim);
-    char* password = ptr;
-
-    // printf("login: %s, %s", email, password);
-
+/*
+    Checks the credentials and returns result
+*/
+char* _login(char* login, char* password) {
     // Initialize the database connection
     MYSQL* conn = mysql_connect();
-    bool result = login_s(conn, email, password);
+    bool result = login_s(conn, login, password);
 
-    return result ? "201" : "403";
+    return result ? "login 201" : "login 403";
 }
 
-// void chat(int sockd) {
-//     char buff[MAX];
-//     char schat[MAX];
-//     // char* response = "200 OK";
-//     char* bye = "Bye";
+// TODO: Make registation endpoint
 
-//     while(1) {
-//         // Reading from Server
-//         memset(buff, 0, sizeof(buff));
-//         read(sockd, buff, MAX);
-//         printf("%s\n", buff);
-
-//         // // Getting message from terminal
-//         // memset(schat, 0, sizeof(schat));
-//         // printf("SERVER: ");
-//         // fgets(schat, sizeof(schat), stdin);
-//         // send(sockd, schat, strlen(schat), 0);
-//         // schat[strlen(schat)] = '\0';
-
-//         // // Checking if it was a terminal signal
-//         // if(strncmp(schat, bye, strlen(bye)) == 0) {
-//         //     break;
-//         // }
-//     }
-// }
+// TODO: Make plagiarism check endpoint
