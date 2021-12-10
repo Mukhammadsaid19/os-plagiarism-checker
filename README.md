@@ -17,7 +17,7 @@ First, run the backend the root folder:
 
 Then, run the server:
 
-`$ ./backend/server
+`$ ./backend/server`
 
 ### Protocol
 
