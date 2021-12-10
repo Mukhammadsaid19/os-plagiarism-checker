@@ -15,9 +15,9 @@ First, run the backend the root folder:
 
 `$ make`
 
-Then, run starting bash script:
+Then, run the server:
 
-`$ ./run.sh`
+`$ ./backend/server
 
 ### Protocol
 
