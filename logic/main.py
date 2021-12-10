@@ -9,5 +9,5 @@ def compare(file1, file2):
     arr = pairwise_similarity.toarray()
     np.fill_diagonal(arr, np.nan)
     similarity = arr[0][1]
-    print(f"Similarity: {round(similarity * 100, 2)}%")
-    return similarity
+    # print(f"Similarity: {round(similarity * 100, 2)}%")
+    return round(similarity * 100, 2)

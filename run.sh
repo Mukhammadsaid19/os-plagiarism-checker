@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./frontend/main.py
+mysql -u "root" -p"22764977x7#X" < db/user.sql

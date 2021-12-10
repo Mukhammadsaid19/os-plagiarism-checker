@@ -1,6 +1,7 @@
 /* server.c */
 
 #include <stdio.h>
+#include <Python.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -11,14 +12,17 @@
 #include <string.h>
 #include <pthread.h>
 #include "mysql.h"
-#include <Python.h>
 
 #define PORT 8080
-#define MAX 512
+#define MAX 4096
 
+char* _plagiarism_checker(char*, char*);
 char* _login(char*, char*);
+char* _signup(char*, char*, char*, char*, char*);
 char* router(char*);
 void *process(void *ptr);
+double plag_check(char*, char*);
+void save_as_files(char*, char*);
 
 // Socket structure
 typedef struct
@@ -36,6 +40,10 @@ void closeSocket(int sock)
 
 int main(int argc, char **argv)
 {
+    // char* res = _signup("U1910222", "usersaid", "Saidakbar", "Saidakhmedov", "sosecure", "s.saidov@gmail.com");
+
+    // printf("RES: %s", res);
+    // _plagiarism_checker("We are here", "You are there");
     int sock = -1;
     struct sockaddr_in address;
     int port = PORT;
@@ -67,7 +75,7 @@ int main(int argc, char **argv)
         return -5;
     }
 
-    printf("ready and listening\n");
+    printf("Ready and listening...\n");
 
     while (1)
     {
@@ -81,7 +89,7 @@ int main(int argc, char **argv)
         else
         {
             /* start a new thread but do not wait for it */
-            pthread_create(&thread, 0, process, (void *)connection);
+            pthread_create(&thread, 0, process, (void *) connection);
             pthread_detach(thread);
         }
     }
@@ -95,7 +103,9 @@ void *process(void *ptr)
     int nread;
 
     connection_t *conn;
-    long addr = 0;
+    struct sockaddr_in* addr;
+    char ip[INET_ADDRSTRLEN];
+    int port;
 
     if (!ptr)
         pthread_exit(0);
@@ -105,31 +115,28 @@ void *process(void *ptr)
     buff = (char *)malloc((MAX)*sizeof(char));
 	buff[MAX - 1] = 0;
 
+
     /* Reading from the client */
     while ((nread = read(conn->sock, buff, MAX)) > 0)
     {
-        addr = (long)((struct sockaddr_in *)&conn->address)->sin_addr.s_addr;
-        printf("%d.%d.%d.%d: %s\n",
-               (int)((addr)&0xff),
-               (int)((addr >> 8) & 0xff),
-               (int)((addr >> 16) & 0xff),
-               (int)((addr >> 24) & 0xff),
-               buff);
+        addr = (struct sockaddr_in *) &conn->address;
+        port = addr->sin_port;
+        
+        inet_ntop(AF_INET, &(addr->sin_addr), ip, INET_ADDRSTRLEN);
 
-        // printf("\nReceived %d bytes\n", nread);
-
-        // printf("From client: %s\n", buff);
-
+        printf("%s:%d\t%s\n", ip, port, buff);
 
         // Delegate request to the router
         char* res = router(buff);
 
         // Sending the response...
+        bzero(buff, MAX);
+
         send(conn->sock, res, 48, 0);
 
     }
 
-    printf("Closing connection to client\n");
+    printf("Closing connection to client at %s:%d\n", ip, port);
     printf("----------------------------\n");
 
     /* close socket and clean up */
@@ -144,7 +151,7 @@ char* router(char* request) {
     char delim[] = " ";
     char* route = strtok(request, delim);
 
-    printf("ROUTER: %s\n", route);
+    // printf("ROUTER: %s\n", route);
 
     if (strcmp(route, "login") == 0) {
         // Data in the format "route login password"
@@ -155,12 +162,36 @@ char* router(char* request) {
         char* password = route;
 
         // Printing data
-        printf("LOGIN: %s %s\n", login, password);
+        // printf("LOGIN: %s %s\n", login, password);
 
         return _login(login, password);
 
-    } else if (strcmp(route, "register") == 0) {
+    } else if (strcmp(route, "signup") == 0) {
+        // Data in the format "signup <id> <login> <fn> <ln> <pass> <email>"
+        route = strtok(NULL, delim);
+        char args[5][128];
+        int i = 0;
+        while(route != NULL) {
+            strcpy(args[i], route);
+            route = strtok(NULL, delim);
+            i++;
+        }
 
+        // printf("SIGNUP: %s %s %s %s %s %s\n", args[0], args[1], args[2], args[3], args[4], args[5]);
+        return _signup(args[0], args[1], args[2], args[3], args[4]);
+
+    } else if (strcmp(route, "check") == 0) {
+        // Data in the format "check <string1> <string2>"
+        route = strtok(NULL, "<<<");
+        char* text1 = route;
+
+        route = strtok(NULL, "<<<");
+        char* text2 = route;
+
+        // printf("%s:%s\n", text1, text2);
+
+        return _plagiarism_checker(text1, text2);
+        
     } else {
 
     }
@@ -179,10 +210,59 @@ char* _login(char* login, char* password) {
     return result ? "login 201" : "login 403";
 }
 
-// TODO: Make registation endpoint
+/*
+    Signs up new user
+*/
+char* _signup(char* id, char* firstName, char* lastName, char* password, char* email)
+{
+    MYSQL* con = mysql_connect();
+    bool result = signup_s(con, id, firstName, lastName, password, email);
+    return result ? "signup 201" : "signup 500";
+}
 
-// TODO: Make plagiarism check endpoint
-char* plag_check(char* file1, char* file2) {
+/*
+    Checks the similarity between two strings.
+*/
+char* _plagiarism_checker(char* string1, char* string2) {
+    save_as_files(string1, string2);
+
+    // printf("SAVED FILES\n");
+
+    double sim = plag_check("file1", "file2");
+
+    char *res = (char*) malloc(16 * sizeof(char));
+
+    sprintf(res, "check %.2f\n", sim);
+
+    // printf("RES: %s\n", res);
+
+    return res;
+}
+
+/* 
+    Saves two strings as two files using File Management
+*/
+void save_as_files(char* string1, char* string2) {
+    // Creting two files
+    FILE *fp1 = fopen("file1", "w");
+    FILE *fp2 = fopen("file2", "w");
+
+    if (fp1 != NULL  && fp2 != NULL) {
+        // Writing data
+        fputs(string1, fp1);
+        fputs(string2, fp2);
+
+        // Closing the files
+        fclose(fp1);
+        fclose(fp2);
+    }
+}
+
+
+/*
+    Checks the similarity between two files
+*/
+double plag_check(char* file1, char* file2) {
     PyObject *pName, *pModule, *pFunc;
     PyObject *pArgs, *pValue;
     int i;
@@ -223,8 +303,10 @@ char* plag_check(char* file1, char* file2) {
             pValue = PyObject_CallObject(pFunc, pArgs);
             Py_DECREF(pArgs);
             if (pValue != NULL) {
-                printf("Result of call: %f\n", PyFloat_AsDouble(pValue));
+                // printf("Result of call: %f\n", PyFloat_AsDouble(pValue));
+                double res = PyFloat_AsDouble(pValue);
                 Py_DECREF(pValue);
+                return res;
             }
             else {
                 Py_DECREF(pFunc);
