@@ -27,7 +27,7 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
         <item>
          <widget class="QLabel" name="loginLabel">
           <property name="font">
@@ -223,7 +223,7 @@
        </layout>
       </widget>
       <widget class="QWidget" name="homePage">
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="gridLayout_2" columnstretch="5,5">
         <item row="0" column="0">
          <widget class="QLabel" name="label_7">
           <property name="font">
@@ -260,6 +260,9 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QTextEdit" name="textEdit"/>
+        </item>
         <item row="2" column="1">
          <widget class="QPushButton" name="logOutButt">
           <property name="font">
@@ -279,13 +282,13 @@
             <pointsize>11</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(249, 249, 249);</string>
+          </property>
           <property name="text">
            <string>Output Message</string>
           </property>
          </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QTextEdit" name="textEdit"/>
         </item>
        </layout>
       </widget>
