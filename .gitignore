@@ -1,3 +1,6 @@
 frontend/venv/ 
-frontend/__pycache__/
+**/__pycache__
 .vscode/
+backend/*.out
+backend/server
+build-frontend-qt-Desktop-Debug/
