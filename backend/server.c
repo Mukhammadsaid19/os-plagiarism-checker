@@ -169,7 +169,7 @@ char* router(char* request) {
     } else if (strcmp(route, "signup") == 0) {
         // Data in the format "signup <id> <login> <fn> <ln> <pass> <email>"
         route = strtok(NULL, delim);
-        char args[5][128];
+        char args[5][512];
         int i = 0;
         while(route != NULL) {
             strcpy(args[i], route);
