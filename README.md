@@ -5,7 +5,6 @@
 Prerequisites:
 - `MySQL`
 - `Python`
-- `Bit of patience`
 
 ### Database
 Note that for now you should run DDL `db/user.sql` manually. 

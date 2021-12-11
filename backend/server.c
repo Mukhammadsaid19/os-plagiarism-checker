@@ -136,8 +136,8 @@ void *process(void *ptr)
 
     }
 
-    printf("Closing connection to client at %s:%d\n", ip, port);
-    printf("----------------------------\n");
+    printf("Closing connection with the client at %s:%d\n", ip, port);
+    // printf("----------------------------\n");
 
     /* close socket and clean up */
     free(buff);
