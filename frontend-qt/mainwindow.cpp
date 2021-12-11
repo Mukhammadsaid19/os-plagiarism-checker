@@ -11,7 +11,9 @@ MainWindow::MainWindow(QWidget *parent):
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
-    _socket.connectToHost(QHostAddress::LocalHost, 8080);
+//    _socket.connectToHost(QHostAddress::LocalHost, 8080);
+
+    _socket.connectToHost(QHostAddress("192.168.43.122"), 8080);
     connect(&_socket, &QTcpSocket::readyRead, this, &MainWindow::readSocket);
 
 //    if(socket->waitForConnected())
